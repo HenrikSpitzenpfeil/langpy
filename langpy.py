@@ -45,7 +45,7 @@ def SendString (
         TimeOut: int
         ) -> int:
     c_MaxLen = ctypes.c_bool(MaxLen)
-    return dll.LSX_SendString(LSID, Ret, MaxLen, ReadLine, TimeOut):
+    return dll.LSX_SendString(LSID, Ret, MaxLen, ReadLine, TimeOut)
 
 def SetShowCmdList (LSID: int, ShowCmdList: bool) -> int:
     c_ShowCmdList = ctypes.c_bool(ShowCmdList)
