@@ -3,6 +3,8 @@ import ctypes
 lstepdll = '.\lstep64'
 dll = ctypes.WinDLL(lstepdll+'.dll')
 
+#TODO: figure out if current byref pass in is correctly writes into variables
+
 def CreateLSID () -> int:
 
     '''Create an ID Value for a controller'''
@@ -89,10 +91,19 @@ def RMeasure (LSID: int) -> int:
 def GetPos (LSID: int, X: float, Y: float, Z: float, A: float) -> int:
     
     '''Gets current postion of all axis. Position is written into the variable 
-    that are passed to the function'''
+    that are passed to the function- Non existent axis return zero'''
 
     c_X = ctypes.byref(ctypes.c_double(X))
     c_Y = ctypes.byref(ctypes.c_double(Y))
     c_Z = ctypes.byref(ctypes.c_double(Z))
     c_A = ctypes.byref(ctypes.c_double(A))
     return dll.LSX_GetPos(LSID, c_X, c_Y, c_Z, c_A)
+
+def GetPosSingleAxis (LSID: int, Axis: int, Pos: float):
+
+    '''Get current position of specified axis.
+    Position is written into Pos variable passed into function.
+    Axis: 1 = X, 2 = Y, 3 = Z ...'''
+
+    c_Pos = ctypes.byref(ctypes.c_double(Pos))
+    return dll.GetPosSingleAxis(LSID, Axis, c_Pos)
