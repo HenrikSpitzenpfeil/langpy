@@ -2,8 +2,10 @@ import ctypes
 
 lstepdll = '.\lstep64.dll'
 dll = ctypes.WinDLL(lstepdll)
+encoding = 'utf8'
 
-#TODO: figure out if current byref pass in is correctly writes into variables
+#TODO: Find all argument that need to be passed by reference
+# Cast all strings to bytstrings if necessary
 
 def CreateLSID () -> tuple:
 
@@ -17,7 +19,7 @@ def LoadConfig (LSID: int, FileName: str) -> int:
 
     '''Loads a Config file fron the given config path string'''
 
-    return dll.LSX_LoadConfig(LSID, FileName)
+    return dll.LSX_LoadConfig(LSID, bytes(FileName, encoding))
 
 def SetControlPars(LSID: int) -> int:
 
@@ -40,10 +42,7 @@ def ConnectSimple (LSID: int, AnInterfaceType: int,
     
     '''Connect to the given controller. Interface settings are passed as arguments.'''
 
-    c_AnInterfaceType = ctypes.c_int32(AnInterfaceType)
-    c_ABR = ctypes.c_int32(ABR)
-    c_AShowProt = ctypes.c_bool(AShowProt)
-    return dll.LSX_ConnectSimple(LSID, c_AnInterfaceType, AComName, c_ABR, c_AShowProt)
+    return dll.LSX_ConnectSimple(LSID, bytes(AnInterfaceType, encoding), AComName, ABR, AShowProt)
 
 def Disconnect (LSID: int) -> int:
 
