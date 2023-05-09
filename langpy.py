@@ -32,6 +32,19 @@ def Connect (LSID: int) -> int:
       
     return dll.LSX_Connect(LSID)
 
+def ConnectSimple (LSID: int, AnInterfaceType: int,
+                   AComName: str,
+                   ABR: int,
+                   AShowProt: bool
+                   ) -> int:
+    
+    '''Connect to the given controller. Interface settings are passed as arguments.'''
+
+    c_AnInterfaceType = ctypes.c_int32(AnInterfaceType)
+    c_ABR = ctypes.c_int32(ABR)
+    c_AShowProt = ctypes.c_bool(AShowProt)
+    return dll.LSX_ConnectSimple(LSID, c_AnInterfaceType, AComName, c_ABR, c_AShowProt)
+
 def Disconnect (LSID: int) -> int:
 
     '''Disconnect from the given controller'''
