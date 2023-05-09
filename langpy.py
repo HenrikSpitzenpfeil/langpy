@@ -1,16 +1,17 @@
 import ctypes
 
-lstepdll = '.\lstep64'
-dll = ctypes.WinDLL(lstepdll+'.dll')
+lstepdll = '.\lstep64.dll'
+dll = ctypes.WinDLL(lstepdll)
 
 #TODO: figure out if current byref pass in is correctly writes into variables
 
-def CreateLSID () -> int:
+def CreateLSID () -> tuple:
 
-    '''Create an ID Value for a controller'''
+    '''Create an ID Value for a controller.
+    Tuple: Error Code: int, LSID: ctypes.c_int32'''
 
-    c_value = ctypes.c_int32()
-    return dll.LSX_CreateLSID(ctypes.byref(c_value))
+    c_LSID = ctypes.c_int32()
+    return dll.LSX_CreateLSID(ctypes.byref(c_LSID)), c_LSID
 
 def LoadConfig (LSID: int, FileName: str) -> int:
 
@@ -56,15 +57,14 @@ def SendString (LSID: int,
                 MaxLen: int,
                 ReadLine: bool,
                 TimeOut: int,
-                Ret: int = 0
-                ) -> int:
+                ) -> tuple:
+    
     '''Send commands that a have no api method as a string.
-    Return an integer as error code. Return of the controller is written
-    into Ret when ReadLine is set to True'''
+    tuple: error code: int, Ret: ctypes.c_int32'''
 
     c_MaxLen = ctypes.c_bool(MaxLen)
-    c_Ret = ctypes.byref(ctypes.c_int32(Ret))
-    return dll.LSX_SendString(LSID, c_Ret, c_MaxLen, ReadLine, TimeOut)
+    c_Ret = ctypes.c_int32(Ret)
+    return dll.LSX_SendString(LSID, ctypes.byref(c_Ret), c_MaxLen, ReadLine, TimeOut), c_Ret
 
 def SetShowCmdList (LSID: int, ShowCmdList: bool) -> int:
 
@@ -88,22 +88,28 @@ def RMeasure (LSID: int) -> int:
 
     dll.LSX_RMeasure(LSID)
 
-def GetPos (LSID: int, X: float, Y: float, Z: float, A: float) -> int:
+def GetPos (LSID: int, X: float, Y: float, Z: float, A: float) -> tuple:
     
     '''Gets current postion of all axis. Position is written into the variable 
-    that are passed to the function- Non existent axis return zero'''
+    that are passed to the function- Non existent axis return zero
+    tuple: error code: int, X: ctypes.c_double, Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double'''
 
-    c_X = ctypes.byref(ctypes.c_double(X))
-    c_Y = ctypes.byref(ctypes.c_double(Y))
-    c_Z = ctypes.byref(ctypes.c_double(Z))
-    c_A = ctypes.byref(ctypes.c_double(A))
-    return dll.LSX_GetPos(LSID, c_X, c_Y, c_Z, c_A)
+    c_X = ctypes.c_double(X)
+    c_Y = ctypes.c_double(Y)
+    c_Z = ctypes.c_double(Z)
+    c_A = ctypes.c_double(A)
+    return dll.LSX_GetPos(LSID, ctypes.byref(c_X),
+                          ctypes.byref(c_Y),
+                          ctypes.byref(c_Z),
+                          ctypes.byref(c_A)
+                          ), c_X, c_Y, c_Z, c_A
 
-def GetPosSingleAxis (LSID: int, Axis: int, Pos: float):
+def GetPosSingleAxis (LSID: int, Axis: int, Pos: float) -> tuple:
 
     '''Get current position of specified axis.
     Position is written into Pos variable passed into function.
-    Axis: 1 = X, 2 = Y, 3 = Z ...'''
+    Axis: 1 = X, 2 = Y, 3 = Z ...
+    tuple: error code: int, Pos: ctypes.c_double'''
 
-    c_Pos = ctypes.byref(ctypes.c_double(Pos))
-    return dll.GetPosSingleAxis(LSID, Axis, c_Pos)
+    c_Pos = ctypes.c_double(Pos)
+    return dll.GetPosSingleAxis(LSID, Axis, ctypes.byref(c_Pos)), c_Pos
