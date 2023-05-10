@@ -137,3 +137,125 @@ def GetPosSingleAxis (LSID: int, Axis: int, Pos: float) -> tuple:
 
     c_Pos = ctypes.c_double(Pos)
     return dll.GetPosSingleAxis(LSID, Axis, ctypes.byref(c_Pos)), c_Pos
+
+def SetPos (LSID: int, X: float, Y: float, Z: float, A: float) -> int:
+    
+    '''Set a new postion value. Current Position will be set to passed values.
+    Origin of the coordinate system will be adjusted accordingly.'''
+
+    c_X = ctypes.c_double(X)
+    c_Y = ctypes.c_double(Y)
+    c_Z = ctypes.c_double(Z)
+    c_A = ctypes.c_double(A)
+    return dll.LSX_SetPos(LSID, c_X, c_Y, c_Z, c_A)
+
+def MoveAbs (LSID: int,
+             X: float,
+             Y: float,
+             Z: float,
+             A: float,
+             Wait: bool = True
+             ) -> int:
+    
+    '''Move to an absolute position from the current position.
+    Movement is linearly interpolated.'''
+
+    c_X = ctypes.c_double(X)
+    c_Y = ctypes.c_double(Y)
+    c_Z = ctypes.c_double(Z)
+    c_A = ctypes.c_double(A)
+    c_wait = ctypes.c_bool(Wait)
+    return dll.LSX_MoveAbs(LSID, c_X, c_Y, c_Z, c_A, c_wait)
+
+def MoveAbsSingleAxis (LSID: int,
+                       Axis: int,
+                       Value: float,
+                       Wait: bool = True
+                       ) -> int:
+
+    ''' Move a single axis to an absolute position from the current position
+    Axis: 1 = X, 2 = Y, 3 = Z ...'''
+
+    c_Value = ctypes.c_double(Value)
+    c_Wait = ctypes.c_bool(Wait)
+    return dll.LSX_MoveAbsSingleAxis(LSID, Axis, c_Value, c_Wait)
+
+def MoveRel (LSID: int,
+             X: float,
+             Y: float,
+             Z: float,
+             A: float,
+             Wait: bool = True
+             ) -> int:
+    
+    ''' Move by a relative vector from current position.'''
+
+    c_X = ctypes.c_double(X)
+    c_Y = ctypes.c_double(Y)
+    c_Z = ctypes.c_double(Z)
+    c_A = ctypes.c_double(A)
+    c_Wait = ctypes.c_bool(Wait)
+    
+    return dll.LSX_MoveRel(LSID, c_X, c_Y, c_Z, c_A, c_Wait)
+
+def MoveRelSingleAxis (LSID: int,
+                       Axis: int,
+                       Value: float,
+                       Wait: bool = True
+                       ) -> int:
+    
+    ''' Move a single axis relative to current position
+    Axis: 1 = X, 2 = Y, 3 = Z ...'''
+
+    c_Value = ctypes.c_double(Value)
+    c_Wait = ctypes.c_bool(Wait)
+    return dll.LSX_MoveSingleAxis(LSID, Axis, c_Value, c_Wait)
+
+def GetDistance (LSID: int,
+                 X: float,
+                 Y: float,
+                 Z: float,
+                 A: float
+                 ) -> tuple:
+    
+    '''Get the Distance of MoveRelShort
+    Tuple: error code: int, 
+            X: ctypes.c_float
+            Y: ctypes.c_float
+            Z: ctypes.c_float
+            A: ctypes.c_float'''
+
+    c_X = ctypes.c_float(X)
+    c_Y = ctypes.c_float(Y)
+    c_Z = ctypes.c_float(Z)
+    c_A = ctypes.c_float(A)
+    return LSX_GetDistance(LSID,
+                           c_X,
+                           c_Y,
+                           c_Z,
+                           c_A
+                           ), c_X, c_Y, c_Z, c_A
+
+def SetDistance (LSID: int, X: float, Y: float, Z: float, A: float) -> int:
+
+    '''Set distance for MoveRelShort'''
+
+    c_X = ctypes.c_float(X)
+    c_Y = ctypes.c_float(Y)
+    c_Z = ctypes.c_float(Z)
+    c_A = ctypes.c_float(A)
+    return dll.LSX_SetDistance(LSID, c_X, c_Y, c_Z, c_A)
+
+def MoveRelShort (LSID: int) -> int:
+
+    '''Moves by a relative vector to current position. 
+    Vector is set with LSX_SetDistance.
+    Use when multiple moves by the same distance in succession are needed.'''
+
+    return dll.LSX_MoveRelShort(LSID)
+
+def StopAxes (LSID: int) -> int:
+
+    '''Interrupts all movement commands'''
+
+    return dll.LSX_StopAxes(LSID)
