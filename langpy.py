@@ -44,8 +44,8 @@ def ConnectSimple (LSID: int, AnInterfaceType: int,
     Interface settings are passed as arguments.'''
 
     return dll.LSX_ConnectSimple(LSID,
-                                 bytes(AnInterfaceType, encoding),
-                                 AComName,
+                                 AnInterfaceType,
+                                 bytes(AComName, encoding),
                                  ABR,
                                  AShowProt
                                  )
@@ -81,11 +81,12 @@ def SendString (LSID: int,
     tuple: error code: int, Ret: ctypes.c_int32'''
 
     c_MaxLen = ctypes.c_bool(MaxLen)
-    c_Ret = ctypes.c_int32(Ret)
+    c_Ret = ctypes.c_int32()
     return dll.LSX_SendString(LSID,
                               ctypes.byref(c_Ret),
-                              c_MaxLen, ReadLine,
-                              TimeOut
+                              c_MaxLen,
+                              ReadLine,
+                              TimeOut,
                               ), c_Ret
 
 def SetShowCmdList (LSID: int, ShowCmdList: bool) -> int:
