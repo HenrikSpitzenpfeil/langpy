@@ -40,9 +40,15 @@ def ConnectSimple (LSID: int, AnInterfaceType: int,
                    AShowProt: bool
                    ) -> int:
     
-    '''Connect to the given controller. Interface settings are passed as arguments.'''
+    '''Connect to the given controller.
+    Interface settings are passed as arguments.'''
 
-    return dll.LSX_ConnectSimple(LSID, bytes(AnInterfaceType, encoding), AComName, ABR, AShowProt)
+    return dll.LSX_ConnectSimple(LSID,
+                                 bytes(AnInterfaceType, encoding),
+                                 AComName,
+                                 ABR,
+                                 AShowProt
+                                 )
 
 def Disconnect (LSID: int) -> int:
 
@@ -76,7 +82,11 @@ def SendString (LSID: int,
 
     c_MaxLen = ctypes.c_bool(MaxLen)
     c_Ret = ctypes.c_int32(Ret)
-    return dll.LSX_SendString(LSID, ctypes.byref(c_Ret), c_MaxLen, ReadLine, TimeOut), c_Ret
+    return dll.LSX_SendString(LSID,
+                              ctypes.byref(c_Ret),
+                              c_MaxLen, ReadLine,
+                              TimeOut
+                              ), c_Ret
 
 def SetShowCmdList (LSID: int, ShowCmdList: bool) -> int:
 
@@ -104,7 +114,8 @@ def GetPos (LSID: int, X: float, Y: float, Z: float, A: float) -> tuple:
     
     '''Gets current postion of all axis. Position is written into the variable 
     that are passed to the function- Non existent axis return zero
-    tuple: error code: int, X: ctypes.c_double, Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double'''
+    tuple: error code: int, X: ctypes.c_double, 
+    Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double'''
 
     c_X = ctypes.c_double(X)
     c_Y = ctypes.c_double(Y)
