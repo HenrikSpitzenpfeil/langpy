@@ -1,0 +1,7 @@
+setup.py
+langpy/__init__.py
+langpy/langpy.py
+langpy.egg-info/PKG-INFO
+langpy.egg-info/SOURCES.txt
+langpy.egg-info/dependency_links.txt
+langpy.egg-info/top_level.txt
