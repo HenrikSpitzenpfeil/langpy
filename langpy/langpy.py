@@ -226,15 +226,15 @@ class LStepController:
 
         '''Get the Distance of MoveRelShort
         Tuple: error code: int, 
-                X: ctypes.c_float
-                Y: ctypes.c_float
-                Z: ctypes.c_float
-                A: ctypes.c_float'''
+                X: ctypes.c_double
+                Y: ctypes.c_double
+                Z: ctypes.c_double
+                A: ctypes.c_double'''
 
-        c_X = ctypes.c_float(X)
-        c_Y = ctypes.c_float(Y)
-        c_Z = ctypes.c_float(Z)
-        c_A = ctypes.c_float(A)
+        c_X = ctypes.c_double(X)
+        c_Y = ctypes.c_double(Y)
+        c_Z = ctypes.c_double(Z)
+        c_A = ctypes.c_double(A)
         return LSX_GetDistance(self.LSID,
                                c_X,
                                c_Y,
@@ -251,10 +251,10 @@ class LStepController:
 
         '''Set distance for MoveRelShort'''
 
-        c_X = ctypes.c_float(X)
-        c_Y = ctypes.c_float(Y)
-        c_Z = ctypes.c_float(Z)
-        c_A = ctypes.c_float(A)
+        c_X = ctypes.c_double(X)
+        c_Y = ctypes.c_double(Y)
+        c_Z = ctypes.c_double(Z)
+        c_A = ctypes.c_double(A)
         return dll.LSX_SetDistance(self.LSID, c_X, c_Y, c_Z, c_A)
 
     def MoveRelShort (self) -> int:
