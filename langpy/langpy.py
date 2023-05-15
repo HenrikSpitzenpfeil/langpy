@@ -142,7 +142,7 @@ class LStepController:
         tuple: error code: int, Pos: ctypes.c_double'''
 
         c_Pos = ctypes.c_double(Pos)
-        return dll.GetPosSingleAxis(self.LSID, Axis, ctypes.byref(c_Pos)), c_Pos
+        return dll.LSX_GetPosSingleAxis(self.LSID, Axis, ctypes.byref(c_Pos)), c_Pos
 
     def SetPos (self, X: float, Y: float, Z: float, A: float) -> int:
 
@@ -235,7 +235,7 @@ class LStepController:
         c_Y = ctypes.c_float(Y)
         c_Z = ctypes.c_float(Z)
         c_A = ctypes.c_float(A)
-        return dll.LSX_GetDistance(self.LSID,
+        return LSX_GetDistance(self.LSID,
                                c_X,
                                c_Y,
                                c_Z,
