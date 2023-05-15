@@ -235,7 +235,7 @@ class LStepController:
         c_Y = ctypes.c_float(Y)
         c_Z = ctypes.c_float(Z)
         c_A = ctypes.c_float(A)
-        return LSX_GetDistance(self.LSID,
+        return dll.LSX_GetDistance(self.LSID,
                                c_X,
                                c_Y,
                                c_Z,
