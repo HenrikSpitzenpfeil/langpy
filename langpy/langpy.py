@@ -4,6 +4,7 @@ lstepdll = '.\lstep64.dll'
 dll = ctypes.WinDLL(lstepdll)
 encoding = 'utf8'
 
+#TODO: store coordinates as class attributes
 class LStepController:
     
     def __init__(self, dll_path):
@@ -11,6 +12,9 @@ class LStepController:
         self.dll = ctypes.WinDLL(dll_path)
         self._encoding = 'utf8'
         self.LSID = self.CreateLSID()[1]
+    
+    def __str__(self):
+        return f'LStepController with LSID {self.LSID}'
 
     def CreateLSID (self) -> tuple:
 
