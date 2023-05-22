@@ -239,7 +239,7 @@ class LStepController:
         c_Y = ctypes.c_double(Y)
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
-        return LSX_GetDistance(self.LSID,
+        return dll.LSX_GetDistance(self.LSID,
                                c_X,
                                c_Y,
                                c_Z,
