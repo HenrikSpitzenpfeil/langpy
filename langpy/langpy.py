@@ -15,7 +15,12 @@ class LStepController:
         self._encoding = 'utf8'
         self.LSID = self.CreateLSID()[1]
         
-        'Automatically calibrates the Controller on initialization'
+        """Automatically connect and calibrates
+        the Controller on initialization"""
+        # This is the config for the SECM controller of Palkovits Lab
+        # Configuration on init need to be implemented in future
+        connection_config = [5, 'COM3', 115200, True]
+        self.ConnectSimple(*connection_config)
         self.Calibrate(self)
         self.RMeasure(self)
 
