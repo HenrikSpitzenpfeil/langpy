@@ -21,8 +21,8 @@ class LStepController:
         # Configuration on init need to be implemented in future
         connection_config = [5, 'COM3', 115200, True]
         self.ConnectSimple(*connection_config)
-        self.Calibrate(self)
-        self.RMeasure(self)
+        self.Calibrate()
+        self.RMeasure()
 
     def __str__(self):
         return f'LStepController with LSID {self.LSID}'
