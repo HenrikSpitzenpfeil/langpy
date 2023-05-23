@@ -14,6 +14,10 @@ class LStepController:
         self.dll = ctypes.WinDLL(dll_path)
         self._encoding = 'utf8'
         self.LSID = self.CreateLSID()[1]
+        
+        'Automatically calibrates the Controller on initialization'
+        self.Calibrate(self)
+        self.RMeasure(self)
 
     def __str__(self):
         return f'LStepController with LSID {self.LSID}'
@@ -118,7 +122,7 @@ class LStepController:
         """Moves all axis to larger position values.
         Move is interrupted when limit switch is reached."""
 
-        dll.LSX_RMeasure(self.LSID)
+        return dll.LSX_RMeasure(self.LSID)
 
     def GetPos(self, X: float, Y: float, Z: float, A: float) -> tuple:
 
@@ -271,3 +275,4 @@ class LStepController:
         '''Interrupts all movement commands'''
 
         return dll.LSX_StopAxes(self.LSID)
+
