@@ -24,6 +24,9 @@ class LStepController:
         self.Calibrate()
         self.RMeasure()
 
+        #Find and set current Positions
+        self.position = self.GetPos()[1:]
+
     def __str__(self):
         return f'LStepController with LSID {self.LSID}'
 
@@ -129,34 +132,34 @@ class LStepController:
 
         return dll.LSX_RMeasure(self.LSID)
 
-    def GetPos(self, X: float, Y: float, Z: float, A: float) -> tuple:
+    def GetPos(self) -> tuple:
 
         """Gets current postion of all axis. Position is written into the variable
         that are passed to the function- Non existent axis return zero
         tuple: error code: int, X: ctypes.c_double,
         Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double"""
 
-        c_X = ctypes.c_double(X)
-        c_Y = ctypes.c_double(Y)
-        c_Z = ctypes.c_double(Z)
-        c_A = ctypes.c_double(A)
+        c_X = ctypes.c_double()
+        c_Y = ctypes.c_double()
+        c_Z = ctypes.c_double()
+        c_A = ctypes.c_double()
         return dll.LSX_GetPos(self.LSID, ctypes.byref(c_X),
                               ctypes.byref(c_Y),
                               ctypes.byref(c_Z),
                               ctypes.byref(c_A)
-                              ), c_X, c_Y, c_Z, c_A
+                              ), c_X.value, c_Y.value, c_Z.value, c_A.value
 
-    def GetPosSingleAxis(self, Axis: int, Pos: float) -> tuple:
+    def GetPosSingleAxis(self, Axis: int) -> tuple:
 
         """Get current position of specified axis.
         Position is written into Pos variable passed into function.
         Axis: 1 = X, 2 = Y, 3 = Z ...
         tuple: error code: int, Pos: ctypes.c_double"""
 
-        c_Pos = ctypes.c_double(Pos)
+        c_Pos = ctypes.c_double()
         return dll.LSX_GetPosSingleAxis(self.LSID,
                                         Axis,
-                                        ctypes.byref(c_Pos)), c_Pos
+                                        ctypes.byref(c_Pos)), c_Pos.value
 
     def SetPos(self, X: float, Y: float, Z: float, A: float) -> int:
 
