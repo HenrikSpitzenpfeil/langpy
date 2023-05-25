@@ -123,14 +123,18 @@ class LStepController:
         Move is interrupted when limit switch is reached.
         All positions are set to zero """
 
-        return dll.LSX_Calibrate(self.LSID)
+        answer = dll.LSX_Calibrate(self.LSID)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def RMeasure(self) -> int:
 
         """Moves all axis to larger position values.
         Move is interrupted when limit switch is reached."""
-
-        return dll.LSX_RMeasure(self.LSID)
+        
+        answer = dll.LSX_RMeasure(self.LSID)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def GetPos(self) -> tuple:
 
@@ -149,17 +153,13 @@ class LStepController:
                               ctypes.byref(c_A)
                               ), c_X.value, c_Y.value, c_Z.value, c_A.value
 
-    def GetPosSingleAxis(self, Axis: int) -> tuple:
+    def GetPosSingleAxis(self, Axis: int) -> float:
 
         """Get current position of specified axis.
         Position is written into Pos variable passed into function.
-        Axis: 1 = X, 2 = Y, 3 = Z ...
-        tuple: error code: int, Pos: ctypes.c_double"""
+        Axis: 1 = X, 2 = Y, 3 = Z ..."""
 
-        c_Pos = ctypes.c_double()
-        return dll.LSX_GetPosSingleAxis(self.LSID,
-                                        Axis,
-                                        ctypes.byref(c_Pos)), c_Pos.value
+        return self.position[Axis-1]
 
     def SetPos(self, X: float, Y: float, Z: float, A: float) -> int:
 
@@ -172,6 +172,9 @@ class LStepController:
         c_Y = ctypes.c_double(Y)
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
+        
+        self.position = X, Y, Z, A
+        
         return dll.LSX_SetPos(self.LSID, c_X, c_Y, c_Z, c_A)
 
     def MoveAbs(self,
@@ -189,7 +192,9 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         c_wait = ctypes.c_bool(Wait)
-        return dll.LSX_MoveAbs(self.LSID, c_X, c_Y, c_Z, c_A, c_wait)
+        answer = dll.LSX_MoveAbs(self.LSID, c_X, c_Y, c_Z, c_A, c_wait)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def MoveAbsSingleAxis(self,
                           Axis: int,
@@ -201,7 +206,9 @@ class LStepController:
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        return dll.LSX_MoveAbsSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = dll.LSX_MoveAbsSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def MoveRel(self,
                 X: float,
@@ -217,8 +224,9 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         c_Wait = ctypes.c_bool(Wait)
-
-        return dll.LSX_MoveRel(self.LSID, c_X, c_Y, c_Z, c_A, c_Wait)
+        answer = dll.LSX_MoveRel(self.LSID, c_X, c_Y, c_Z, c_A, c_Wait)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def MoveRelSingleAxis(self,
                           Axis: int,
@@ -230,7 +238,9 @@ class LStepController:
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        return dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def GetDistance(self,
                     X: float,
@@ -275,8 +285,9 @@ class LStepController:
         Vector is set with LSX_SetDistance.
         Use when multiple moves by the same distance
         in succession are needed."""
-
-        return dll.LSX_MoveRelShort(self.LSID)
+        answer = dll.LSX_MoveRelShor(self.LSID)
+        self.position = self.GetPos()[1:]
+        return answer
 
     def StopAxes(self) -> int:
 
