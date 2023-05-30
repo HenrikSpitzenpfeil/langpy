@@ -285,7 +285,7 @@ class LStepController:
         Vector is set with LSX_SetDistance.
         Use when multiple moves by the same distance
         in succession are needed."""
-        answer = dll.LSX_MoveRelShor(self.LSID)
+        answer = dll.LSX_MoveRelShort(self.LSID)
         self.position = self.GetPos()[1:]
         return answer
 
