@@ -4,8 +4,6 @@ lstepdll = '.\\lstep64.dll'
 dll = ctypes.WinDLL(lstepdll)
 encoding = 'utf8'
 
-'TODO: store coordinates as class attributes'
-
 
 class LStepController:
 
@@ -138,8 +136,8 @@ class LStepController:
 
     def GetPos(self) -> tuple:
 
-        """Gets current postion of all axis. Position is written into the variable
-        that are passed to the function- Non existent axis return zero
+        """Gets current postion of all axis. Position is written into the
+        variable that are passed to the function- Non existent axis return zero
         tuple: error code: int, X: ctypes.c_double,
         Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double"""
 
