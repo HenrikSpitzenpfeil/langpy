@@ -236,7 +236,7 @@ class LStepController:
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        answer = dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = dll.LSX_MoveRelSingleAxis(self.LSID, Axis, c_Value, c_Wait)
         self.position = self.GetPos()[1:]
         return answer
 
