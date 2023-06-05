@@ -145,11 +145,12 @@ class LStepController:
         c_Y = ctypes.c_double()
         c_Z = ctypes.c_double()
         c_A = ctypes.c_double()
-        return self.dll.LSX_GetPos(self.LSID, ctypes.byref(c_X),
-                              ctypes.byref(c_Y),
-                              ctypes.byref(c_Z),
-                              ctypes.byref(c_A)
-                              ), c_X.value, c_Y.value, c_Z.value, c_A.value
+        return self.dll.LSX_GetPos(self.LSID, 
+                                   ctypes.byref(c_X),
+                                   ctypes.byref(c_Y),
+                                   ctypes.byref(c_Z),
+                                   ctypes.byref(c_A)
+                                   ), c_X.value, c_Y.value, c_Z.value, c_A.value
 
     def GetPosSingleAxis(self, Axis: int) -> float:
 
@@ -236,7 +237,7 @@ class LStepController:
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        answer = self.dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = self.dll.LSX_MoveRelSingleAxis(self.LSID, Axis, c_Value, c_Wait)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -258,10 +259,11 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         return self.dll.LSX_GetDistance(self.LSID,
-                                   c_X,
-                                   c_Y,
-                                   c_Z,
-                                   c_A), c_X, c_Y, c_Z, c_A
+                                        ctypes.byref(c_X),
+                                        ctypes.byref(c_Y),
+                                        ctypes.byref(c_Z),
+                                        ctypes.byref(c_A)
+                                        ), c_X, c_Y, c_Z, c_A
 
     def SetDistance(self,
                     X: float,
@@ -311,10 +313,11 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         return self.dll.LSX_GetVel(self.LSID,
-                                   c_X,
-                                   c_Y,
-                                   c_Z,
-                                   c_A), c_X, c_Y, c_Z, c_A
+                                   ctypes.byref(c_X),
+                                   ctypes.byref(c_Y),
+                                   ctypes.byref(c_Z),
+                                   ctypes.byref(c_A)
+                                   ), c_X, c_Y, c_Z, c_A
     
     def SetVel(self, X, Y, Z, A) -> int:
 

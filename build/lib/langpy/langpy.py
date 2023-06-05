@@ -4,8 +4,6 @@ lstepdll = '.\\lstep64.dll'
 dll = ctypes.WinDLL(lstepdll)
 encoding = 'utf8'
 
-'TODO: store coordinates as class attributes'
-
 
 class LStepController:
 
@@ -21,8 +19,8 @@ class LStepController:
         # Configuration on init need to be implemented in future
         connection_config = [5, 'COM3', 115200, True]
         self.ConnectSimple(*connection_config)
-        self.Calibrate()
-        self.RMeasure()
+        #self.Calibrate()
+        #self.RMeasure()
 
         #Find and set current Positions
         self.position = self.GetPos()[1:]
@@ -36,7 +34,7 @@ class LStepController:
         Tuple: Error Code: int, LSID: ctypes.c_int32"""
 
         c_LSID = ctypes.c_int32()
-        return dll.LSX_CreateLSID(ctypes.byref(c_LSID)), c_LSID
+        return self.dll.LSX_CreateLSID(ctypes.byref(c_LSID)), c_LSID
 
     def LoadConfig(self, FileName: str) -> int:
 
@@ -48,14 +46,14 @@ class LStepController:
 
         """Sends the loaded Cofig Parameters to the given controller"""
 
-        return dll.LSX_SetControlPars(self.LSID)
+        return self.dll.LSX_SetControlPars(self.LSID)
 
     def Connect(self) -> int:
 
         """Connect to the given controller using the
           parameters in the previously loaded Config file"""
 
-        return dll.LSX_Connect(self.LSID)
+        return self.dll.LSX_Connect(self.LSID)
 
     def ConnectSimple(self, AnInterfaceType: int,
                       AComName: str,
@@ -65,7 +63,7 @@ class LStepController:
         """Connect to the given controller.
         Interface settings are passed as arguments."""
 
-        return dll.LSX_ConnectSimple(self.LSID,
+        return self.dll.LSX_ConnectSimple(self.LSID,
                                      AnInterfaceType,
                                      bytes(AComName, encoding),
                                      ABR,
@@ -76,7 +74,7 @@ class LStepController:
 
         """Disconnect from the given controller"""
 
-        return dll.LSX_Disconnect(self.LSID)
+        return self.dll.LSX_Disconnect(self.LSID)
 
     def SetCommandTimeout(self,
                           AtoRead: int,
@@ -88,7 +86,7 @@ class LStepController:
         AtoMove: timeout for positionion calls in ms
         AtoCalibrate: timeout for calibration calls in ms"""
 
-        return dll.LSX_SetCommandTimeout(self.LSID,
+        return self.dll.LSX_SetCommandTimeout(self.LSID,
                                          AtoRead,
                                          AtoMove,
                                          AtoCalibrate)
@@ -103,7 +101,7 @@ class LStepController:
 
         c_MaxLen = ctypes.c_bool(MaxLen)
         c_Ret = ctypes.c_int32()
-        return dll.LSX_SendString(self.LSID,
+        return self.dll.LSX_SendString(self.LSID,
                                   ctypes.byref(c_Ret),
                                   c_MaxLen,
                                   ReadLine,
@@ -115,7 +113,7 @@ class LStepController:
         """ Toggle the command list window"""
 
         c_ShowCmdList = ctypes.c_bool(ShowCmdList)
-        return dll.LSX_SetShowCmdList(self.LSID, c_ShowCmdList)
+        return self.dll.LSX_SetShowCmdList(self.LSID, c_ShowCmdList)
 
     def Calibrate(self) -> int:
 
@@ -123,7 +121,7 @@ class LStepController:
         Move is interrupted when limit switch is reached.
         All positions are set to zero """
 
-        answer = dll.LSX_Calibrate(self.LSID)
+        answer = self.dll.LSX_Calibrate(self.LSID)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -132,14 +130,14 @@ class LStepController:
         """Moves all axis to larger position values.
         Move is interrupted when limit switch is reached."""
         
-        answer = dll.LSX_RMeasure(self.LSID)
+        answer = self.dll.LSX_RMeasure(self.LSID)
         self.position = self.GetPos()[1:]
         return answer
 
     def GetPos(self) -> tuple:
 
-        """Gets current postion of all axis. Position is written into the variable
-        that are passed to the function- Non existent axis return zero
+        """Gets current postion of all axis. Position is written into the
+        variable that are passed to the function- Non existent axis return zero
         tuple: error code: int, X: ctypes.c_double,
         Y: ctypes.c_double, Z: ctypes.c_double, A: ctypes.c_double"""
 
@@ -147,7 +145,7 @@ class LStepController:
         c_Y = ctypes.c_double()
         c_Z = ctypes.c_double()
         c_A = ctypes.c_double()
-        return dll.LSX_GetPos(self.LSID, ctypes.byref(c_X),
+        return self.dll.LSX_GetPos(self.LSID, ctypes.byref(c_X),
                               ctypes.byref(c_Y),
                               ctypes.byref(c_Z),
                               ctypes.byref(c_A)
@@ -175,7 +173,7 @@ class LStepController:
         
         self.position = X, Y, Z, A
         
-        return dll.LSX_SetPos(self.LSID, c_X, c_Y, c_Z, c_A)
+        return self.dll.LSX_SetPos(self.LSID, c_X, c_Y, c_Z, c_A)
 
     def MoveAbs(self,
                 X: float,
@@ -192,7 +190,7 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         c_wait = ctypes.c_bool(Wait)
-        answer = dll.LSX_MoveAbs(self.LSID, c_X, c_Y, c_Z, c_A, c_wait)
+        answer = self.dll.LSX_MoveAbs(self.LSID, c_X, c_Y, c_Z, c_A, c_wait)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -206,7 +204,7 @@ class LStepController:
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        answer = dll.LSX_MoveAbsSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = self.dll.LSX_MoveAbsSingleAxis(self.LSID, Axis, c_Value, c_Wait)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -224,7 +222,7 @@ class LStepController:
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
         c_Wait = ctypes.c_bool(Wait)
-        answer = dll.LSX_MoveRel(self.LSID, c_X, c_Y, c_Z, c_A, c_Wait)
+        answer = self.dll.LSX_MoveRel(self.LSID, c_X, c_Y, c_Z, c_A, c_Wait)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -233,12 +231,12 @@ class LStepController:
                           Value: float,
                           Wait: bool = True) -> int:
 
-        ''' Move a single axis relative to current position
-        Axis: 1 = X, 2 = Y, 3 = Z ...'''
+        """Move a single axis relative to current position
+        Axis: 1 = X, 2 = Y, 3 = Z ..."""
 
         c_Value = ctypes.c_double(Value)
         c_Wait = ctypes.c_bool(Wait)
-        answer = dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
+        answer = self.dll.LSX_MoveSingleAxis(self.LSID, Axis, c_Value, c_Wait)
         self.position = self.GetPos()[1:]
         return answer
 
@@ -248,18 +246,18 @@ class LStepController:
                     Z: float,
                     A: float) -> tuple:
 
-        '''Get the Distance of MoveRelShort
+        """Get the Distance of MoveRelShort
         Tuple: error code: int,
                 X: ctypes.c_double
                 Y: ctypes.c_double
                 Z: ctypes.c_double
-                A: ctypes.c_double'''
+                A: ctypes.c_double"""
 
         c_X = ctypes.c_double(X)
         c_Y = ctypes.c_double(Y)
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
-        return dll.LSX_GetDistance(self.LSID,
+        return self.dll.LSX_GetDistance(self.LSID,
                                    c_X,
                                    c_Y,
                                    c_Z,
@@ -277,7 +275,7 @@ class LStepController:
         c_Y = ctypes.c_double(Y)
         c_Z = ctypes.c_double(Z)
         c_A = ctypes.c_double(A)
-        return dll.LSX_SetDistance(self.LSID, c_X, c_Y, c_Z, c_A)
+        return self.dll.LSX_SetDistance(self.LSID, c_X, c_Y, c_Z, c_A)
 
     def MoveRelShort(self) -> int:
 
@@ -285,13 +283,45 @@ class LStepController:
         Vector is set with LSX_SetDistance.
         Use when multiple moves by the same distance
         in succession are needed."""
-        answer = dll.LSX_MoveRelShor(self.LSID)
+        answer = self.dll.LSX_MoveRelShort(self.LSID)
         self.position = self.GetPos()[1:]
         return answer
 
     def StopAxes(self) -> int:
 
-        '''Interrupts all movement commands'''
+        """Interrupts all movement commands"""
 
-        return dll.LSX_StopAxes(self.LSID)
+        return self.dll.LSX_StopAxes(self.LSID)
+    
+    def GetVel(self,
+                    X: float,
+                    Y: float,
+                    Z: float,
+                    A: float) -> tuple:
+        
+        """Get the Velocity at which movements are executed
+        Tuple: error code: int,
+                X: ctypes.c_double
+                Y: ctypes.c_double
+                Z: ctypes.c_double
+                A: ctypes.c_double"""
 
+        c_X = ctypes.c_double(X)
+        c_Y = ctypes.c_double(Y)
+        c_Z = ctypes.c_double(Z)
+        c_A = ctypes.c_double(A)
+        return self.dll.LSX_GetVel(self.LSID,
+                                   c_X,
+                                   c_Y,
+                                   c_Z,
+                                   c_A), c_X, c_Y, c_Z, c_A
+    
+    def SetVel(self, X, Y, Z, A) -> int:
+
+        """Set the velocity at which movements are executed"""
+
+        c_X = ctypes.c_double(X)
+        c_Y = ctypes.c_double(Y)
+        c_Z = ctypes.c_double(Z)
+        c_A = ctypes.c_double(A)
+        return self.dll.LSX_SetVel(self.LSID, c_X, c_Y, c_Z, c_A)
