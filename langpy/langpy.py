@@ -35,7 +35,7 @@ class LStepController:
 
         """Loads a Config file fron the given config path string"""
 
-        return dll.LSX_LoadConfig(self.LSID, bytes(FileName, encoding))
+        return self.dll.LSX_LoadConfig(self.LSID, bytes(FileName, self.encoding))
 
     def SetControlPars(self) -> int:
 
@@ -60,7 +60,7 @@ class LStepController:
 
         return self.dll.LSX_ConnectSimple(self.LSID,
                                      AnInterfaceType,
-                                     bytes(AComName, encoding),
+                                     bytes(AComName, self.encoding),
                                      ABR,
                                      AShowProt
                                      )
