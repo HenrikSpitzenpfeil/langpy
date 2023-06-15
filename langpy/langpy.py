@@ -1,10 +1,5 @@
 import ctypes
 
-lstepdll = '.\\lstep64.dll'
-dll = ctypes.WinDLL(lstepdll)
-encoding = 'utf8'
-
-
 class LStepController:
 
     def __init__(self, dll_path):
