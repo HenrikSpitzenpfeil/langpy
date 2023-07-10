@@ -1,1 +1,5 @@
 *.ipynb
+**/*.ipynb
+build/
+.vscode/
+langpy.egg-info/
