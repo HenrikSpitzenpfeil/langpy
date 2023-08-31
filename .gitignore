@@ -1,0 +1,7 @@
+*.ipynb
+**/*.ipynb
+build/
+.vscode/
+langpy.egg-info/
+**/__pycache__/
+*.pyc
